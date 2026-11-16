@@ -1,3 +1,4 @@
+import type { Json } from "@/integrations/supabase/types";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -22,7 +23,7 @@ interface Lead {
   email: string | null;
   source: string;
   message: string | null;
-  metadata: any;
+  metadata: Json | null;
   created_at: string;
 }
 
@@ -36,7 +37,7 @@ export const LeadsTable = () => {
 
   const fetchLeads = async () => {
     setIsLoading(true);
-    const { data, error } = await (supabase as any)
+    const { data, error } = await supabase
       .from("leads")
       .select("*")
       .order("created_at", { ascending: false });

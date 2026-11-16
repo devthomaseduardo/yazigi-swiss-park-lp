@@ -26,11 +26,7 @@ const questions = [
   { id: 8, question: 'Você prefere aulas presenciais ou online?', options: ['Presencial', 'Online', 'Híbrido', 'Sem preferência'] }
 ]
 
-const contactSchema = z.object({
-  fullName: z.string().trim().min(3, 'Nome deve ter pelo menos 3 caracteres').max(100, 'Nome muito longo'),
-  phone: z.string().trim().regex(/^\+?\d{10,20}$/, 'Telefone inválido (mínimo 10 dígitos)'),
-  email: z.string().trim().email('Email inválido').optional().or(z.literal(''))
-})
+import { contactSchema } from '@/lib/schemas'
 
 export const DiagnosticModal = ({ isOpen, onClose }: DiagnosticModalProps) => {
   const [step, setStep] = useState<'contact' | 'questions'>('contact')
@@ -53,7 +49,7 @@ export const DiagnosticModal = ({ isOpen, onClose }: DiagnosticModalProps) => {
       setStep('questions')
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const fieldErrors: any = {}
+        const fieldErrors: Record<string, string> = {}
         error.errors.forEach(err => {
           if (err.path && err.path[0]) fieldErrors[err.path[0]] = err.message
         })

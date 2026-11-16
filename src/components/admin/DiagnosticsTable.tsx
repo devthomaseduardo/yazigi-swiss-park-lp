@@ -41,7 +41,7 @@ export const DiagnosticsTable = () => {
 
   const fetchDiagnostics = async () => {
     setIsLoading(true);
-    const { data, error } = await (supabase as any)
+    const { data, error } = await supabase
       .from("diagnostic_results")
       .select("*")
       .order("created_at", { ascending: false });

@@ -62,7 +62,7 @@ const Auth = () => {
       navigate("/admin");
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const fieldErrors: any = {};
+        const fieldErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
           if (err.path[0]) {
             fieldErrors[err.path[0]] = err.message;
