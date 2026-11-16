@@ -1,3 +1,4 @@
+import type { Json } from "@/integrations/supabase/types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -7,7 +8,7 @@ export interface LeadData {
   email?: string;
   source: string;
   message?: string;
-  metadata?: Record<string, any>;
+  metadata?: Json;
 }
 
 export const useLead = () => {
@@ -15,7 +16,7 @@ export const useLead = () => {
 
   const saveLead = async (data: LeadData) => {
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from("leads")
         .insert({
           full_name: data.fullName,

@@ -20,10 +20,10 @@ export const DashboardStats = () => {
     today.setHours(0, 0, 0, 0);
 
     const [diagnosticsResult, leadsResult, todayDiagnosticsResult, todayLeadsResult] = await Promise.all([
-      (supabase as any).from("diagnostic_results").select("*", { count: "exact", head: true }),
-      (supabase as any).from("leads").select("*", { count: "exact", head: true }),
-      (supabase as any).from("diagnostic_results").select("*", { count: "exact", head: true }).gte("created_at", today.toISOString()),
-      (supabase as any).from("leads").select("*", { count: "exact", head: true }).gte("created_at", today.toISOString()),
+      supabase.from("diagnostic_results").select("*", { count: "exact", head: true }),
+      supabase.from("leads").select("*", { count: "exact", head: true }),
+      supabase.from("diagnostic_results").select("*", { count: "exact", head: true }).gte("created_at", today.toISOString()),
+      supabase.from("leads").select("*", { count: "exact", head: true }).gte("created_at", today.toISOString()),
     ]);
 
     setStats({

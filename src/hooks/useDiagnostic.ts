@@ -20,7 +20,7 @@ export const useDiagnostic = () => {
 
   const saveDiagnostic = async (data: DiagnosticData) => {
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from("diagnostic_results")
         .insert({
           full_name: data.fullName,

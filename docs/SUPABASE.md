@@ -25,9 +25,30 @@ Metadados de vídeos (título, arquivo, caminho no storage, URL pública, JSON d
 
 ## Row Level Security (RLS)
 
-As migrations habilitam RLS e criam políticas que permitem **INSERT** público (`anon`) em `diagnostic_results` e `leads`, adequado para formulários na SPA.
+| Tabela | anon | authenticated | admin (`is_admin()`) |
+|---|---|---|---|
+| `leads` | INSERT | INSERT | INSERT, SELECT |
+| `diagnostic_results` | INSERT | INSERT | INSERT, SELECT |
+| `videos` | SELECT | SELECT | SELECT |
+| `admins` | — | SELECT do próprio registro | — |
 
-**Leitura no admin:** usuários autenticados precisam de políticas `SELECT` (e eventualmente `DELETE`/`UPDATE`) alinhadas ao papel (`authenticated`) ou a claims customizadas. Valide no **SQL Editor** do Supabase que as políticas atendem à equipe sem expor dados publicamente.
+Escrita em `videos` fica só com a chave service role, usada pelo `scripts/upload-videos.mjs` na máquina local.
+
+A política de leitura do painel está em `migrations/20261116120000_admin_read_policies.sql`. `is_admin()` é `SECURITY DEFINER` para checar a tabela `admins` sem depender das políticas dela.
+
+### Liberar um administrador
+
+1. Crie o usuário em **Authentication → Users** no Supabase.
+2. No SQL Editor:
+
+```sql
+INSERT INTO public.admins (user_id)
+SELECT id FROM auth.users WHERE email = 'pessoa@exemplo.com';
+```
+
+### Histórico das migrações
+
+`20251022...` e `20251025...` criam as mesmas tabelas; a segunda usa `IF NOT EXISTS` e só repete as políticas de INSERT. Elas foram mantidas como estão porque já foram aplicadas em produção, e reescrever migrações aplicadas quebra o histórico do Supabase.
 
 ## Storage
 
